@@ -1,6 +1,6 @@
-export const QUOTE_ASSET = "USDT";
-export const ORDER_AMOUNT_PERCENT = 10;
-export const MINIMUM_LEVERAGE = 50;
-export const KLINE_INTERVAL = "15m";
-export const TAKE_PROFIT_PERCENT = 100;
-export const STOP_LOSS_PERCENT = -100;
+export const SYMBOL = "BTCUSDT";
+export const KLINE_INTERVAL = "1d";
+export const KLINE_LIMIT = 1500;
+export const SMA_PERIOD = 25;
+export const INITIAL_FUNDING = 100;
+export const LEVERAGE = 5;

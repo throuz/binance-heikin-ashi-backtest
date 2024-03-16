@@ -28,77 +28,10 @@ export const getBinanceFuturesAPI = async (path, totalParams) => {
 
 // GET
 
-export const exchangeInformationAPI = async () => {
-  const responseData = await getBinanceFuturesAPI("/fapi/v1/exchangeInfo");
-  return responseData;
-};
-
-export const futuresAccountBalanceAPI = async (totalParams) => {
-  const responseData = await getBinanceFuturesAPI(
-    "/fapi/v2/balance",
-    totalParams
-  );
-  return responseData;
-};
-
-export const markPriceAPI = async (totalParams) => {
-  const responseData = await getBinanceFuturesAPI(
-    "/fapi/v1/premiumIndex",
-    totalParams
-  );
-  return responseData;
-};
-
-export const positionInformationAPI = async (totalParams) => {
-  const responseData = await getBinanceFuturesAPI(
-    "/fapi/v2/positionRisk",
-    totalParams
-  );
-  return responseData;
-};
-
-export const notionalAndLeverageBracketsAPI = async (totalParams) => {
-  const responseData = await getBinanceFuturesAPI(
-    "/fapi/v1/leverageBracket",
-    totalParams
-  );
-  return responseData;
-};
-
 export const markPriceKlineDataAPI = async (totalParams) => {
   const responseData = await getBinanceFuturesAPI(
     "/fapi/v1/markPriceKlines",
     totalParams
   );
   return responseData;
-};
-
-// POST
-
-export const changeInitialLeverageAPI = async (totalParams) => {
-  const signature = getSignature(totalParams);
-  const response = await binanceFuturesAPI.post("/fapi/v1/leverage", {
-    ...totalParams,
-    signature
-  });
-  return response.data;
-};
-
-export const newOrderAPI = async (totalParams) => {
-  const signature = getSignature(totalParams);
-  const response = await binanceFuturesAPI.post("/fapi/v1/order", {
-    ...totalParams,
-    signature
-  });
-  return response.data;
-};
-
-// DELETE
-
-export const cancelAllOpenOrdersAPI = async (totalParams) => {
-  const signature = getSignature(totalParams);
-  const response = await binanceFuturesAPI.delete("/fapi/v1/allOpenOrders", {
-    params: { ...totalParams, signature }
-  });
-  return response.data;
 };
