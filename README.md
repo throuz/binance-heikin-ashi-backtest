@@ -24,15 +24,15 @@ npm run app
 
 ## Explanation of result
 
-result: 'Is a good strategy' -> *If finalMultiples performs better than onlyHoldMultiples, it is judged to be a good strategy.*
+Running Period: 1500 -> _Running period_
 
-runningDays: 1500 -> *Running days*
+Hold PNL Percentage: 2865.11% -> _The PNL percentage of just holding at the beginning_
 
-onlyHoldMultiples: 33 -> *The final return of just holding at the beginning (unit is a multiple)*
+Final PNL Percentage: 212269407.63% -> _The PNL percentage of Heikin-Ashi trading_
 
-finalMultiples: 5448160 -> *The final return of Heikin-Ashi trading (unit is a multiple)*
+Result: good -> _If final PNL better than hold PNL, it is judged as good, otherwise as bad_
 
-If `Liquidation` appears, it means that the leverage was too high and the position was forced to be liquidated.
+If `Liquidation` appeared, it means that the leverage was too high and the position was forced to be liquidated.
 
 ## Contributing
 
