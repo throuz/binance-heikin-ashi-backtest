@@ -1,18 +1,16 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { getHeikinAshiKLineData, getSmaData } from "../src/helpers.js";
-import { KLINE_LIMIT } from "../configs/trade-config.js";
+import { getHeikinAshiKLineData } from "../src/helpers.js";
 
 const filePath = new URL("./history.json", import.meta.url);
 
-const convertSuitableKLineData = (kLineData, smaData) => {
+const convertSuitableKLineData = (kLineData) => {
   const results = [];
-  for (let i = 0; i < KLINE_LIMIT; i++) {
+  for (let i = 0; i < kLineData.open.length; i++) {
     results.push({
       open: kLineData.open[i],
       close: kLineData.close[i],
       high: kLineData.high[i],
-      low: kLineData.low[i],
-      sma: smaData[i]
+      low: kLineData.low[i]
     });
   }
   return results;
@@ -21,11 +19,7 @@ const convertSuitableKLineData = (kLineData, smaData) => {
 export const getHistoryData = async (needLastest) => {
   if (needLastest) {
     const heikinAshiKLineData = await getHeikinAshiKLineData();
-    const smaData = await getSmaData();
-    const suitableKLineData = convertSuitableKLineData(
-      heikinAshiKLineData,
-      smaData
-    );
+    const suitableKLineData = convertSuitableKLineData(heikinAshiKLineData);
     await writeFile(filePath, JSON.stringify(suitableKLineData, undefined, 2));
     return suitableKLineData;
   }

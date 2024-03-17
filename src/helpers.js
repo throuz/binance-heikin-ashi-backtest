@@ -1,11 +1,10 @@
 import {
   SYMBOL,
   KLINE_INTERVAL,
-  KLINE_LIMIT,
-  SMA_PERIOD
+  KLINE_LIMIT
 } from "../configs/trade-config.js";
 import { markPriceKlineDataAPI } from "./api.js";
-import { heikinashi, sma } from "technicalindicators";
+import { heikinashi } from "technicalindicators";
 
 export const getMarkPriceKlineData = async () => {
   const totalParams = {
@@ -29,13 +28,4 @@ export const getHeikinAshiKLineData = async () => {
     low: lowPrices,
     close: closePrices
   });
-};
-
-export const getSmaData = async () => {
-  const heikinAshiKLineData = await getHeikinAshiKLineData();
-  const emptyArray = new Array(SMA_PERIOD - 1).fill(undefined);
-  return [
-    ...emptyArray,
-    ...sma({ period: SMA_PERIOD, values: heikinAshiKLineData.close })
-  ];
 };
