@@ -16,17 +16,21 @@ for (let i = 1; i < historyData.length; i++) {
   const previousData = historyData[i - 1];
   const currentData = historyData[i];
   // Buy
-  if (!hasPosition && fund > 0 && previousData.close > previousData.open) {
+  if (
+    !hasPosition &&
+    fund > 0 &&
+    previousData.heikinAshiData.close > previousData.heikinAshiData.open
+  ) {
     const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
     hasPosition = true;
-    openPrice = (currentData.open + currentData.close) / 2;
+    openPrice = (currentData.realData.open + currentData.realData.close) / 2;
     liquidationPrice = openPrice * ((LEVERAGE - 1) / LEVERAGE + 0.01); // Actual tests have found that typically 1% more
     valueOfEachPoint = (positionFund * LEVERAGE) / openPrice;
     const fee = positionFund * LEVERAGE * FEE;
     fund = fund - fee;
   }
   // Liquidation
-  if (hasPosition && currentData.low < liquidationPrice) {
+  if (hasPosition && currentData.realData.low < liquidationPrice) {
     isLiquidation = true;
     console.log("--------------------------------------------");
     console.log("Liquidation");
@@ -34,10 +38,12 @@ for (let i = 1; i < historyData.length; i++) {
   }
   // Sell
   if (
-    (hasPosition && previousData.close < previousData.open) ||
+    (hasPosition &&
+      previousData.heikinAshiData.close < previousData.heikinAshiData.open) ||
     (hasPosition && i === historyData.length - 1)
   ) {
-    const closePrice = (currentData.open + currentData.close) / 2;
+    const closePrice =
+      (currentData.realData.open + currentData.realData.close) / 2;
     const priceDifference = closePrice - openPrice;
     fund = fund + valueOfEachPoint * priceDifference;
     hasPosition = false;
@@ -52,10 +58,9 @@ for (let i = 1; i < historyData.length; i++) {
 }
 
 if (!isLiquidation) {
-  const holdPNLPercentage =
-    (historyData[historyData.length - 1].close / historyData[0].close - 1) *
-    LEVERAGE *
-    100;
+  const finalPrice = historyData[historyData.length - 1].realData.close;
+  const firstPrice = historyData[0].realData.close;
+  const holdPNLPercentage = (finalPrice / firstPrice - 1) * LEVERAGE * 100;
   const finalPNLPercentage = (fund / INITIAL_FUNDING - 1) * 100;
   const result = finalPNLPercentage > holdPNLPercentage ? "good" : "bad";
   console.log("--------------------------------------------");

@@ -5,8 +5,20 @@ import {
   KLINE_START_TIME,
   KLINE_END_TIME
 } from "../configs/trade-config.js";
-import { markPriceKlineDataAPI } from "./api.js";
+import { klineDataAPI, markPriceKlineDataAPI } from "./api.js";
 import { heikinashi } from "technicalindicators";
+
+export const getKlineData = async () => {
+  const totalParams = {
+    symbol: SYMBOL,
+    interval: KLINE_INTERVAL,
+    limit: KLINE_LIMIT,
+    startTime: KLINE_START_TIME,
+    endTime: KLINE_END_TIME
+  };
+  const klineData = await klineDataAPI(totalParams);
+  return klineData;
+};
 
 export const getMarkPriceKlineData = async () => {
   const totalParams = {
@@ -20,8 +32,9 @@ export const getMarkPriceKlineData = async () => {
   return markPriceKlineData;
 };
 
-export const getHeikinAshiKLineData = async () => {
+export const getHeikinAshiKlineData = async () => {
   const markPriceKlineData = await getMarkPriceKlineData();
+  const timestamps = markPriceKlineData.map((kline) => Number(kline[0]));
   const openPrices = markPriceKlineData.map((kline) => Number(kline[1]));
   const highPrices = markPriceKlineData.map((kline) => Number(kline[2]));
   const lowPrices = markPriceKlineData.map((kline) => Number(kline[3]));
@@ -30,6 +43,7 @@ export const getHeikinAshiKLineData = async () => {
     open: openPrices,
     high: highPrices,
     low: lowPrices,
-    close: closePrices
+    close: closePrices,
+    timestamp: timestamps
   });
 };

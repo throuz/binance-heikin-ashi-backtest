@@ -28,6 +28,14 @@ export const getBinanceFuturesAPI = async (path, totalParams) => {
 
 // GET
 
+export const klineDataAPI = async (totalParams) => {
+  const responseData = await getBinanceFuturesAPI(
+    "/fapi/v1/klines",
+    totalParams
+  );
+  return responseData;
+};
+
 export const markPriceKlineDataAPI = async (totalParams) => {
   const responseData = await getBinanceFuturesAPI(
     "/fapi/v1/markPriceKlines",
