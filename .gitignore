@@ -1,3 +1,4 @@
 node_modules
 test.js
 history/json/*
+.real-env-config
