@@ -36,12 +36,12 @@ for (let i = 1; i < historyData.length; i++) {
     const closePrice = (currentData.open + currentData.close) / 2;
     const priceDifference = closePrice - openPrice;
     fund = fund + valueOfEachPoint * priceDifference;
-    console.log(
-      Math.floor(fund),
-      Math.floor(openPrice),
-      Math.floor(closePrice),
-      Math.floor(valueOfEachPoint * priceDifference)
-    );
+    console.log({
+      fund: Math.floor(fund),
+      openPrice: Math.floor(openPrice),
+      closePrice: Math.floor(closePrice),
+      result: Math.floor(valueOfEachPoint * priceDifference)
+    });
     hasPosition = false;
     openPrice = null;
     liquidationPrice = null;
@@ -54,17 +54,14 @@ if (!isLiquidation) {
     (historyData[historyData.length - 1].close / historyData[0].close) *
     LEVERAGE;
   const finalMultiples = fund / INITIAL_FUNDING;
-  if (finalMultiples > onlyHoldMultiples) {
-    console.log(
-      "Is a good strategy",
-      Math.floor(onlyHoldMultiples),
-      Math.floor(finalMultiples)
-    );
-  } else {
-    console.log(
-      "Is a bad strategy",
-      Math.floor(onlyHoldMultiples),
-      Math.floor(finalMultiples)
-    );
-  }
+  const result =
+    finalMultiples > onlyHoldMultiples
+      ? "Is a good strategy"
+      : "Is a bad strategy";
+  console.log({
+    result: result,
+    runningDays: historyData.length,
+    onlyHoldMultiples: Math.floor(onlyHoldMultiples),
+    finalMultiples: Math.floor(finalMultiples)
+  });
 }
