@@ -1,38 +1,38 @@
 # Binance Fibonacci BOT
 
-Binance Fibonacci BOT is built based on the Fibonacci retracement strategy.
+Binance Heikin-Ashi Backtest is specifically used to backtest the performance of Heikin-Ashi in contract trading.
 
 ## DISCLAIMER: Use at your own risk.
 
-## Basic Usage
+## Basic usage
 
-Make sure the cross wallet has a certain amount of USDT.
-
-Install all dependencies.
+1. Install all dependencies.
 
 ```
 npm i
 ```
 
-Create `configs/env-config-dev.js` or `configs/env-config-prod.js`, please refer to the `configs/env-config-example.js` content.
+2. Modify API_KEY and SECRET_KEY to your own in `configs/env-config.js`.
 
-Trading parameters can be modified in `configs/trade-config.js`.
+3. Trading parameters can be modified in `configs/trade-config.js`.
 
-This command for `configs/env-config-dev.js`
-
-```
-npm run start:dev
-```
-
-This command for `configs/env-config-prod.js`
+4. Run the command to get the result
 
 ```
-npm run start:prod
+npm run app
 ```
 
-## Strategy
+## Explanation of result
 
-This robot will randomly select a trading pair and automatically determine whether it meets the conditions for opening a position. When opening a position, it will set a take profit & stop loss orders based on Fibonacci retracement.
+result: 'Is a good strategy' -> *If finalMultiples performs better than onlyHoldMultiples, it is judged to be a good strategy.*
+
+runningDays: 1500 -> *Running days*
+
+onlyHoldMultiples: 33 -> *The final return of just holding at the beginning (unit is a multiple)*
+
+finalMultiples: 5448160 -> *The final return of Heikin-Ashi trading (unit is a multiple)*
+
+If `Liquidation` appears, it means that the leverage was too high and the position was forced to be liquidated.
 
 ## Contributing
 
