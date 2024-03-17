@@ -1,4 +1,4 @@
-# Binance Fibonacci BOT
+# Binance Heikin-Ashi Backtest
 
 Binance Heikin-Ashi Backtest is specifically used to backtest the performance of Heikin-Ashi in contract trading.
 
