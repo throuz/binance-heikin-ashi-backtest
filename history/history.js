@@ -2,7 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { getHeikinAshiKLineData } from "../src/helpers.js";
 import { SYMBOL } from "../configs/trade-config.js";
 
-const filePath = new URL(`./${SYMBOL}.json`, import.meta.url);
+const filePath = new URL(`./json/${SYMBOL}.json`, import.meta.url);
 
 const convertSuitableKLineData = (kLineData) => {
   const results = [];
