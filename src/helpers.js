@@ -17,10 +17,18 @@ export const getKlineData = async () => {
     endTime: KLINE_END_TIME
   };
   const klineData = await klineDataAPI(params);
-  return klineData;
+  const results = klineData.map((kline) => ({
+    open: Number(kline[1]),
+    high: Number(kline[2]),
+    low: Number(kline[3]),
+    close: Number(kline[4]),
+    openTime: kline[0],
+    closeTime: kline[6]
+  }));
+  return results;
 };
 
-export const getMarkPriceKlineData = async () => {
+export const getHeikinAshiKlineData = async () => {
   const params = {
     symbol: SYMBOL,
     interval: KLINE_INTERVAL,
@@ -29,21 +37,23 @@ export const getMarkPriceKlineData = async () => {
     endTime: KLINE_END_TIME
   };
   const markPriceKlineData = await markPriceKlineDataAPI(params);
-  return markPriceKlineData;
-};
-
-export const getHeikinAshiKlineData = async () => {
-  const markPriceKlineData = await getMarkPriceKlineData();
-  const timestamps = markPriceKlineData.map((kline) => Number(kline[0]));
   const openPrices = markPriceKlineData.map((kline) => Number(kline[1]));
   const highPrices = markPriceKlineData.map((kline) => Number(kline[2]));
   const lowPrices = markPriceKlineData.map((kline) => Number(kline[3]));
   const closePrices = markPriceKlineData.map((kline) => Number(kline[4]));
-  return heikinashi({
+  const heikinashiResults = heikinashi({
     open: openPrices,
     high: highPrices,
     low: lowPrices,
-    close: closePrices,
-    timestamp: timestamps
+    close: closePrices
   });
+  const results = markPriceKlineData.map((kline, i) => ({
+    open: heikinashiResults.open[i],
+    high: heikinashiResults.high[i],
+    low: heikinashiResults.low[i],
+    close: heikinashiResults.close[i],
+    openTime: kline[0],
+    closeTime: kline[6]
+  }));
+  return results;
 };

@@ -8,20 +8,8 @@ const convertHistoryData = (kLineData, heikinAshiKlineData) => {
   const results = [];
   for (let i = 0; i < kLineData.length; i++) {
     results.push({
-      realData: {
-        open: Number(kLineData[i][1]),
-        high: Number(kLineData[i][2]),
-        low: Number(kLineData[i][3]),
-        close: Number(kLineData[i][4]),
-        timestamp: Number(kLineData[i][0])
-      },
-      heikinAshiData: {
-        open: heikinAshiKlineData.open[i],
-        high: heikinAshiKlineData.high[i],
-        low: heikinAshiKlineData.low[i],
-        close: heikinAshiKlineData.close[i],
-        timestamp: heikinAshiKlineData.timestamp[i]
-      }
+      realData: kLineData[i],
+      heikinAshiData: heikinAshiKlineData[i]
     });
   }
   return results;
