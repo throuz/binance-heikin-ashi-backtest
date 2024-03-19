@@ -1,5 +1,5 @@
 import { getHistoryData } from "./history/history.js";
-import { INITIAL_FUNDING, LEVERAGE, FEE } from "./configs/trade-config.js";
+import { INITIAL_FUNDING, LEVERAGE, FEE } from "./config/config.js";
 
 const needLastest = true;
 const historyData = await getHistoryData(needLastest);

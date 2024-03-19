@@ -4,31 +4,31 @@ import {
   KLINE_LIMIT,
   KLINE_START_TIME,
   KLINE_END_TIME
-} from "../configs/trade-config.js";
+} from "../config/config.js";
 import { klineDataAPI, markPriceKlineDataAPI } from "./api.js";
 import { heikinashi } from "technicalindicators";
 
 export const getKlineData = async () => {
-  const totalParams = {
+  const params = {
     symbol: SYMBOL,
     interval: KLINE_INTERVAL,
     limit: KLINE_LIMIT,
     startTime: KLINE_START_TIME,
     endTime: KLINE_END_TIME
   };
-  const klineData = await klineDataAPI(totalParams);
+  const klineData = await klineDataAPI(params);
   return klineData;
 };
 
 export const getMarkPriceKlineData = async () => {
-  const totalParams = {
+  const params = {
     symbol: SYMBOL,
     interval: KLINE_INTERVAL,
     limit: KLINE_LIMIT,
     startTime: KLINE_START_TIME,
     endTime: KLINE_END_TIME
   };
-  const markPriceKlineData = await markPriceKlineDataAPI(totalParams);
+  const markPriceKlineData = await markPriceKlineDataAPI(params);
   return markPriceKlineData;
 };
 

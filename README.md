@@ -12,9 +12,7 @@ Binance Heikin-Ashi Backtest is specifically used to backtest the performance of
 npm i
 ```
 
-2. Modify API_KEY and SECRET_KEY to your own in `configs/env-config.js`.
-
-3. Trading parameters can be modified in `configs/trade-config.js`.
+3. Parameters can be modified in `config/config.js`.
 
 4. Run the command to get the result
 
@@ -28,7 +26,7 @@ Running Period: 1500 -> _Running period_
 
 Hold PNL Percentage: 2865.11% -> _The PNL percentage of just holding at the beginning_
 
-Final PNL Percentage: 212269407.63% -> _The PNL percentage of Heikin-Ashi trading_
+Final PNL Percentage: 21226.63% -> _The PNL percentage of Heikin-Ashi trading_
 
 Result: good -> _If final PNL better than hold PNL, it is judged as good, otherwise as bad_
 

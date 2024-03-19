@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { getKlineData, getHeikinAshiKlineData } from "../src/helpers.js";
-import { SYMBOL } from "../configs/trade-config.js";
+import { SYMBOL } from "../config/config.js";
 
 const filePath = new URL(`./json/${SYMBOL}.json`, import.meta.url);
 
