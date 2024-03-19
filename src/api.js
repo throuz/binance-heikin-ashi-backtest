@@ -1,9 +1,20 @@
+import crypto from "node:crypto";
+import querystring from "node:querystring";
 import { nodeCache } from "./cache.js";
 import { binanceFuturesAPI } from "./web-services.js";
 
+const getSignature = (params) => {
+  const queryString = querystring.stringify(params);
+  const signature = crypto
+    .createHmac("sha256", "3?}1b_0~W:y?")
+    .update(queryString)
+    .digest("hex");
+  return signature;
+};
+
 const getBinanceFuturesAPI = async (path, params) => {
-  const randomString = Math.random().toString(36).substring(2, 7);
-  const key = path + "/" + randomString;
+  const signature = getSignature(params);
+  const key = path + "/" + signature;
   if (nodeCache.has(key)) {
     return nodeCache.get(key);
   }
