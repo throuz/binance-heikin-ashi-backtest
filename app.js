@@ -19,7 +19,8 @@ for (let i = 1; i < historyData.length; i++) {
   if (
     !hasPosition &&
     fund > 0 &&
-    previousData.heikinAshiData.close > previousData.heikinAshiData.open
+    previousData.heikinAshiData.close > previousData.heikinAshiData.open &&
+    currentData.heikinAshiData.previousLongTermTrend === "up"
   ) {
     const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
     hasPosition = true;

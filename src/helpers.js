@@ -1,5 +1,6 @@
 import {
   SYMBOL,
+  LONG_TERM_KLINE_INTERVAL,
   KLINE_INTERVAL,
   KLINE_LIMIT,
   KLINE_START_TIME,
@@ -28,10 +29,10 @@ export const getKlineData = async () => {
   return results;
 };
 
-export const getHeikinAshiKlineData = async () => {
+const getHeikinAshiKlineData = async (interval = KLINE_INTERVAL) => {
   const params = {
     symbol: SYMBOL,
-    interval: KLINE_INTERVAL,
+    interval: interval,
     limit: KLINE_LIMIT,
     startTime: KLINE_START_TIME,
     endTime: KLINE_END_TIME
@@ -54,6 +55,28 @@ export const getHeikinAshiKlineData = async () => {
     close: heikinashiResults.close[i],
     openTime: kline[0],
     closeTime: kline[6]
+  }));
+  return results;
+};
+
+export const getOptimizedHeikinAshiKlineData = async () => {
+  const shortTermData = await getHeikinAshiKlineData();
+  const longTermData = await getHeikinAshiKlineData(LONG_TERM_KLINE_INTERVAL);
+  const getPreviousTrendByTimestamp = (timestamp) => {
+    for (let i = 0; i < longTermData.length; i++) {
+      const previousData = longTermData[i - 1];
+      const currentData = longTermData[i];
+      if (
+        timestamp >= currentData.openTime &&
+        timestamp <= currentData.closeTime
+      ) {
+        return previousData.close > previousData.open ? "up" : "down";
+      }
+    }
+  };
+  const results = shortTermData.map((kline) => ({
+    ...kline,
+    previousLongTermTrend: getPreviousTrendByTimestamp(kline.openTime)
   }));
   return results;
 };

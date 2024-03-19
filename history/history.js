@@ -1,5 +1,8 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { getKlineData, getHeikinAshiKlineData } from "../src/helpers.js";
+import {
+  getKlineData,
+  getOptimizedHeikinAshiKlineData
+} from "../src/helpers.js";
 import { SYMBOL } from "../config/config.js";
 
 const filePath = new URL(`./json/${SYMBOL}.json`, import.meta.url);
@@ -18,7 +21,7 @@ const convertHistoryData = (kLineData, heikinAshiKlineData) => {
 export const getHistoryData = async (needLastest) => {
   if (needLastest) {
     const klineData = await getKlineData();
-    const heikinAshiKlineData = await getHeikinAshiKlineData();
+    const heikinAshiKlineData = await getOptimizedHeikinAshiKlineData();
     const historyData = convertHistoryData(klineData, heikinAshiKlineData);
     await writeFile(filePath, JSON.stringify(historyData, undefined, 2));
     return historyData;

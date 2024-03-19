@@ -1,5 +1,6 @@
 export const SYMBOL = "BTCUSDT";
-export const KLINE_INTERVAL = "1d";
+export const LONG_TERM_KLINE_INTERVAL = "1d";
+export const KLINE_INTERVAL = "1h";
 export const KLINE_LIMIT = 1500;
 export const KLINE_START_TIME = undefined; // Timestamp, for example 1635724800000
 export const KLINE_END_TIME = undefined; // Timestamp, for example 1635724800000
