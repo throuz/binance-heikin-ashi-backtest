@@ -23,7 +23,7 @@ for (let i = 1; i < historyData.length; i++) {
   ) {
     const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
     hasPosition = true;
-    openPrice = (currentData.realData.open + currentData.realData.close) / 2;
+    openPrice = currentData.realData.open;
     liquidationPrice = openPrice * ((LEVERAGE - 1) / LEVERAGE + 0.01); // Actual tests have found that typically 1% more
     valueOfEachPoint = (positionFund * LEVERAGE) / openPrice;
     const fee = positionFund * LEVERAGE * FEE;
@@ -42,8 +42,7 @@ for (let i = 1; i < historyData.length; i++) {
       previousData.heikinAshiData.close < previousData.heikinAshiData.open) ||
     (hasPosition && i === historyData.length - 1)
   ) {
-    const closePrice =
-      (currentData.realData.open + currentData.realData.close) / 2;
+    const closePrice = currentData.realData.open;
     const priceDifference = closePrice - openPrice;
     fund = fund + valueOfEachPoint * priceDifference;
     hasPosition = false;
