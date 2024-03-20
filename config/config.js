@@ -4,6 +4,7 @@ export const KLINE_INTERVAL = "1h";
 export const KLINE_LIMIT = 1500;
 export const KLINE_START_TIME = undefined; // Timestamp, for example 1635724800000
 export const KLINE_END_TIME = undefined; // Timestamp, for example 1635724800000
+export const PREVIOUS_AVERAGE_VOLUME_PERIOD = 30;
 export const INITIAL_FUNDING = 100;
 export const LEVERAGE = 4;
 export const FEE = 0.0005; // 0.05%

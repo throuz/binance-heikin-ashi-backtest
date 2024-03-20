@@ -27,7 +27,8 @@ for (let i = 1; i < historyData.length; i++) {
     !hasPosition &&
     fund > 0 &&
     previousData.heikinAshiData.close > previousData.heikinAshiData.open &&
-    currentData.heikinAshiData.previousLongTermTrend === "up"
+    currentData.heikinAshiData.previousLongTermTrend === "up" &&
+    currentData.realData.volume < currentData.realData.previousAverageVolume
   ) {
     const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
     const fee = positionFund * LEVERAGE * FEE;
@@ -48,7 +49,9 @@ for (let i = 1; i < historyData.length; i++) {
   // Sell
   if (
     (hasPosition &&
-      previousData.heikinAshiData.close < previousData.heikinAshiData.open) ||
+      previousData.heikinAshiData.close < previousData.heikinAshiData.open &&
+      currentData.realData.volume >
+        currentData.realData.previousAverageVolume) ||
     (hasPosition && i === historyData.length - 1)
   ) {
     const closePrice = currentData.realData.open;

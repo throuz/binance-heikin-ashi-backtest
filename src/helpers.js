@@ -5,6 +5,7 @@ import {
   KLINE_LIMIT,
   KLINE_START_TIME,
   KLINE_END_TIME,
+  PREVIOUS_AVERAGE_VOLUME_PERIOD,
   FUNDING_RATE
 } from "../config/config.js";
 import { klineDataAPI, markPriceKlineDataAPI } from "./api.js";
@@ -19,13 +20,26 @@ export const getKlineData = async () => {
     endTime: KLINE_END_TIME
   };
   const klineData = await klineDataAPI(params);
-  const results = klineData.map((kline) => ({
+  const volumeArray = klineData.map((kline) => Number(kline[5]));
+  const getPreviousAverageVolume = (i) => {
+    if (i >= PREVIOUS_AVERAGE_VOLUME_PERIOD) {
+      const sumVolume = volumeArray
+        .slice(i - PREVIOUS_AVERAGE_VOLUME_PERIOD, i)
+        .reduce((acc, volume) => volume + acc, 0);
+      const previousAverageVolume = sumVolume / PREVIOUS_AVERAGE_VOLUME_PERIOD;
+      return previousAverageVolume;
+    }
+    return null;
+  };
+  const results = klineData.map((kline, i) => ({
     open: Number(kline[1]),
     high: Number(kline[2]),
     low: Number(kline[3]),
     close: Number(kline[4]),
+    volume: Number(kline[5]),
     openTime: kline[0],
-    closeTime: kline[6]
+    closeTime: kline[6],
+    previousAverageVolume: getPreviousAverageVolume(i)
   }));
   return results;
 };
@@ -64,7 +78,7 @@ export const getOptimizedHeikinAshiKlineData = async () => {
   const shortTermData = await getHeikinAshiKlineData();
   const longTermData = await getHeikinAshiKlineData(LONG_TERM_KLINE_INTERVAL);
   const getPreviousTrendByTimestamp = (timestamp) => {
-    for (let i = 0; i < longTermData.length; i++) {
+    for (let i = 1; i < longTermData.length; i++) {
       const previousData = longTermData[i - 1];
       const currentData = longTermData[i];
       if (
