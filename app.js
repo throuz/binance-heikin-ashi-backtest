@@ -83,11 +83,18 @@ if (!isLiquidation) {
     firstData.openTime,
     finalData.openTime
   );
+  const lowestPrice = Math.min(...historyData.map((data) => data.realData.low));
+  const isLiquidation =
+    (lowestPrice / firstPrice - 1 - FUNDING_RATE * fundingFeeTimes) *
+      LEVERAGE *
+      100 <
+    -100;
   const holdPNLPercentage = (finalPrice / firstPrice - 1) * 100;
-  const holdWithLeveragePNLPercentage =
-    (finalPrice / firstPrice - 1 - FUNDING_RATE * fundingFeeTimes) *
-    LEVERAGE *
-    100;
+  const holdWithLeveragePNLPercentage = isLiquidation
+    ? -100
+    : (finalPrice / firstPrice - 1 - FUNDING_RATE * fundingFeeTimes) *
+      LEVERAGE *
+      100;
   const tradePNLPercentage = (fund / INITIAL_FUNDING - 1) * 100;
   console.log("--------------------------------------------");
   console.log("Running Period:", historyData.length);
