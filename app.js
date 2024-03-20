@@ -84,13 +84,13 @@ if (!isLiquidation) {
     finalData.openTime
   );
   const lowestPrice = Math.min(...historyData.map((data) => data.realData.low));
-  const isLiquidation =
+  const isHoldWithLeverageLiquidation =
     (lowestPrice / firstPrice - 1 - FUNDING_RATE * fundingFeeTimes) *
       LEVERAGE *
       100 <
     -100;
   const holdPNLPercentage = (finalPrice / firstPrice - 1) * 100;
-  const holdWithLeveragePNLPercentage = isLiquidation
+  const holdWithLeveragePNLPercentage = isHoldWithLeverageLiquidation
     ? -100
     : (finalPrice / firstPrice - 1 - FUNDING_RATE * fundingFeeTimes) *
       LEVERAGE *
