@@ -7,3 +7,4 @@ export const KLINE_END_TIME = undefined; // Timestamp, for example 1635724800000
 export const INITIAL_FUNDING = 100;
 export const LEVERAGE = 4;
 export const FEE = 0.0005; // 0.05%
+export const FUNDING_RATE = 0.0001; // 0.01%

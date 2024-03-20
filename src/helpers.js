@@ -4,7 +4,8 @@ import {
   KLINE_INTERVAL,
   KLINE_LIMIT,
   KLINE_START_TIME,
-  KLINE_END_TIME
+  KLINE_END_TIME,
+  FUNDING_RATE
 } from "../config/config.js";
 import { klineDataAPI, markPriceKlineDataAPI } from "./api.js";
 import { heikinashi } from "technicalindicators";
@@ -79,4 +80,17 @@ export const getOptimizedHeikinAshiKlineData = async () => {
     previousLongTermTrend: getPreviousTrendByTimestamp(kline.openTime)
   }));
   return results;
+};
+
+export const getFundingFeeTimes = (startTimeStamp, endTimeStamp) => {
+  const timeDifference = endTimeStamp - startTimeStamp;
+  const hours = timeDifference / (1000 * 60 * 60);
+  const times = Math.floor(hours / 8);
+  return times;
+};
+
+export const getFundingFee = (positionFund, startTimeStamp, endTimeStamp) => {
+  const times = getFundingFeeTimes(startTimeStamp, endTimeStamp);
+  const fundingFee = positionFund * FUNDING_RATE * times;
+  return fundingFee;
 };

@@ -1,5 +1,11 @@
 import { getHistoryData } from "./history/history.js";
-import { INITIAL_FUNDING, LEVERAGE, FEE } from "./config/config.js";
+import {
+  INITIAL_FUNDING,
+  LEVERAGE,
+  FEE,
+  FUNDING_RATE
+} from "./config/config.js";
+import { getFundingFee, getFundingFeeTimes } from "./src/helpers.js";
 
 const needLastest = true;
 const historyData = await getHistoryData(needLastest);
@@ -8,6 +14,7 @@ let isLiquidation = false;
 
 let fund = INITIAL_FUNDING;
 let hasPosition = false;
+let startPositionTimestamp = null;
 let openPrice = null;
 let liquidationPrice = null;
 let valueOfEachPoint = null;
@@ -23,12 +30,13 @@ for (let i = 1; i < historyData.length; i++) {
     currentData.heikinAshiData.previousLongTermTrend === "up"
   ) {
     const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
+    const fee = positionFund * LEVERAGE * FEE;
+    fund = fund - fee;
     hasPosition = true;
+    startPositionTimestamp = currentData.realData.openTime;
     openPrice = currentData.realData.open;
     liquidationPrice = openPrice * ((LEVERAGE - 1) / LEVERAGE + 0.01); // Actual tests have found that typically 1% more
     valueOfEachPoint = (positionFund * LEVERAGE) / openPrice;
-    const fee = positionFund * LEVERAGE * FEE;
-    fund = fund - fee;
   }
   // Liquidation
   if (hasPosition && currentData.realData.low < liquidationPrice) {
@@ -46,26 +54,44 @@ for (let i = 1; i < historyData.length; i++) {
     const closePrice = currentData.realData.open;
     const priceDifference = closePrice - openPrice;
     fund = fund + valueOfEachPoint * priceDifference;
+    const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
+    const fee = positionFund * LEVERAGE * FEE;
+    const fundingFee = getFundingFee(
+      positionFund,
+      startPositionTimestamp,
+      currentData.realData.openTime
+    );
+    fund = fund - fee - fundingFee;
     hasPosition = false;
+    startPositionTimestamp = null;
     openPrice = null;
     liquidationPrice = null;
     valueOfEachPoint = null;
-    const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
-    const fee = positionFund * LEVERAGE * FEE;
-    fund = fund - fee;
     console.log("Fund:", fund.toFixed(2));
   }
 }
 
 if (!isLiquidation) {
-  const finalPrice = historyData[historyData.length - 1].realData.close;
-  const firstPrice = historyData[0].realData.close;
-  const holdPNLPercentage = (finalPrice / firstPrice - 1) * LEVERAGE * 100;
-  const finalPNLPercentage = (fund / INITIAL_FUNDING - 1) * 100;
-  const result = finalPNLPercentage > holdPNLPercentage ? "good" : "bad";
+  const firstData = historyData[0].realData;
+  const finalData = historyData[historyData.length - 1].realData;
+  const firstPrice = firstData.close;
+  const finalPrice = finalData.close;
+  const fundingFeeTimes = getFundingFeeTimes(
+    firstData.openTime,
+    finalData.openTime
+  );
+  const holdPNLPercentage = (finalPrice / firstPrice - 1) * 100;
+  const holdWithLeveragePNLPercentage =
+    (finalPrice / firstPrice - 1 - FUNDING_RATE * fundingFeeTimes) *
+    LEVERAGE *
+    100;
+  const tradePNLPercentage = (fund / INITIAL_FUNDING - 1) * 100;
   console.log("--------------------------------------------");
   console.log("Running Period:", historyData.length);
   console.log("Hold PNL Percentage:", holdPNLPercentage.toFixed(2) + "%");
-  console.log("Final PNL Percentage:", finalPNLPercentage.toFixed(2) + "%");
-  console.log("Result:", result);
+  console.log(
+    "Hold With Leverage PNL Percentage:",
+    holdWithLeveragePNLPercentage.toFixed(2) + "%"
+  );
+  console.log("Trade PNL Percentage:", tradePNLPercentage.toFixed(2) + "%");
 }
