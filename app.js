@@ -2,6 +2,7 @@ import { getHistoryData } from "./history/history.js";
 import {
   AVERAGE_VOLUME_THRESHOLD_FACTOR,
   INITIAL_FUNDING,
+  EACH_TIME_INVEST_FUND_PERCENTAGE,
   LEVERAGE,
   FEE,
   FUNDING_RATE
@@ -18,6 +19,7 @@ const historyData = await getHistoryData(needLastest);
 let isLiquidation = false;
 
 let fund = INITIAL_FUNDING;
+let positionFund = null;
 let hasPosition = false;
 let startPositionTimestamp = null;
 let openPrice = null;
@@ -37,7 +39,7 @@ for (let i = 1; i < historyData.length; i++) {
       previousData.realData.previousAverageVolume *
         (1 - AVERAGE_VOLUME_THRESHOLD_FACTOR)
   ) {
-    const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
+    positionFund = fund * ((EACH_TIME_INVEST_FUND_PERCENTAGE - 1) / 100); // Actual tests have found that typically 1% less
     const fee = positionFund * LEVERAGE * FEE;
     fund = fund - fee;
     hasPosition = true;
@@ -66,15 +68,15 @@ for (let i = 1; i < historyData.length; i++) {
   ) {
     const closePrice = currentData.realData.open;
     const priceDifference = closePrice - openPrice;
-    fund = fund + valueOfEachPoint * priceDifference;
-    const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
+    positionFund += valueOfEachPoint * priceDifference;
     const fee = positionFund * LEVERAGE * FEE;
     const fundingFee = getFundingFee(
       positionFund,
       startPositionTimestamp,
       currentData.realData.openTime
     );
-    fund = fund - fee - fundingFee;
+    fund = fund + valueOfEachPoint * priceDifference - fee - fundingFee;
+    positionFund = null;
     hasPosition = false;
     startPositionTimestamp = null;
     openPrice = null;
