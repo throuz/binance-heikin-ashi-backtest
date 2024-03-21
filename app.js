@@ -56,6 +56,8 @@ for (let i = 1; i < historyData.length; i++) {
       currentData.realData.volume >
         currentData.realData.previousAverageVolume *
           (1 + AVERAGE_VOLUME_THRESHOLD_FACTOR)) ||
+    (hasPosition &&
+      currentData.heikinAshiData.previousLongTermTrend === "down") ||
     (hasPosition && i === historyData.length - 1)
   ) {
     const closePrice = currentData.realData.open;
