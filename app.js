@@ -1,5 +1,6 @@
 import { getHistoryData } from "./history/history.js";
 import {
+  AVERAGE_VOLUME_THRESHOLD_FACTOR,
   INITIAL_FUNDING,
   LEVERAGE,
   FEE,
@@ -28,7 +29,9 @@ for (let i = 1; i < historyData.length; i++) {
     fund > 0 &&
     previousData.heikinAshiData.close > previousData.heikinAshiData.open &&
     currentData.heikinAshiData.previousLongTermTrend === "up" &&
-    currentData.realData.volume < currentData.realData.previousAverageVolume
+    currentData.realData.volume <
+      currentData.realData.previousAverageVolume *
+        (1 - AVERAGE_VOLUME_THRESHOLD_FACTOR)
   ) {
     const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
     const fee = positionFund * LEVERAGE * FEE;
@@ -51,7 +54,8 @@ for (let i = 1; i < historyData.length; i++) {
     (hasPosition &&
       previousData.heikinAshiData.close < previousData.heikinAshiData.open &&
       currentData.realData.volume >
-        currentData.realData.previousAverageVolume) ||
+        currentData.realData.previousAverageVolume *
+          (1 + AVERAGE_VOLUME_THRESHOLD_FACTOR)) ||
     (hasPosition && i === historyData.length - 1)
   ) {
     const closePrice = currentData.realData.open;
