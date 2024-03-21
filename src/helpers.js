@@ -24,7 +24,7 @@ export const getKlineData = async () => {
   const getPreviousAverageVolume = (i) => {
     if (i >= PREVIOUS_AVERAGE_VOLUME_PERIOD) {
       const sumVolume = volumeArray
-        .slice(i - PREVIOUS_AVERAGE_VOLUME_PERIOD, i)
+        .slice(i - PREVIOUS_AVERAGE_VOLUME_PERIOD - 1, i - 1)
         .reduce((acc, volume) => volume + acc, 0);
       const previousAverageVolume = sumVolume / PREVIOUS_AVERAGE_VOLUME_PERIOD;
       return previousAverageVolume;
