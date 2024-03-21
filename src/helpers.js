@@ -108,3 +108,21 @@ export const getFundingFee = (positionFund, startTimeStamp, endTimeStamp) => {
   const fundingFee = positionFund * FUNDING_RATE * times;
   return fundingFee;
 };
+
+const getDaysBetweenTimestamp = (startTimestamp, endTimeStamp) => {
+  const timeDifference = endTimeStamp - startTimestamp;
+  const oneDayMs = 1000 * 60 * 60 * 24;
+  const days = timeDifference / oneDayMs;
+  return days;
+};
+
+export const getDailyPNLPercentage = (
+  PNLPercentage,
+  startTimestamp,
+  endTimeStamp
+) => {
+  const days = getDaysBetweenTimestamp(startTimestamp, endTimeStamp);
+  const dailyPNLPercentage =
+    (Math.pow(1 + PNLPercentage / 100, 1 / days) - 1) * 100;
+  return dailyPNLPercentage;
+};

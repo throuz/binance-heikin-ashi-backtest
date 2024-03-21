@@ -6,7 +6,11 @@ import {
   FEE,
   FUNDING_RATE
 } from "./config/config.js";
-import { getFundingFee, getFundingFeeTimes } from "./src/helpers.js";
+import {
+  getFundingFee,
+  getFundingFeeTimes,
+  getDailyPNLPercentage
+} from "./src/helpers.js";
 
 const needLastest = true;
 const historyData = await getHistoryData(needLastest);
@@ -102,6 +106,11 @@ if (!isLiquidation) {
       LEVERAGE *
       100;
   const tradePNLPercentage = (fund / INITIAL_FUNDING - 1) * 100;
+  const dailyTradePNLPercentage = getDailyPNLPercentage(
+    tradePNLPercentage,
+    firstData.openTime,
+    finalData.closeTime
+  );
   console.log("--------------------------------------------");
   console.log("Running Period:", historyData.length);
   console.log("Hold PNL Percentage:", holdPNLPercentage.toFixed(2) + "%");
@@ -110,4 +119,8 @@ if (!isLiquidation) {
     holdWithLeveragePNLPercentage.toFixed(2) + "%"
   );
   console.log("Trade PNL Percentage:", tradePNLPercentage.toFixed(2) + "%");
+  console.log(
+    "Daily Trade PNL Percentage:",
+    dailyTradePNLPercentage.toFixed(2) + "%"
+  );
 }
