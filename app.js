@@ -33,8 +33,8 @@ for (let i = 1; i < historyData.length; i++) {
     fund > 0 &&
     previousData.heikinAshiData.close > previousData.heikinAshiData.open &&
     currentData.heikinAshiData.previousLongTermTrend === "up" &&
-    currentData.realData.volume <
-      currentData.realData.previousAverageVolume *
+    previousData.realData.volume <
+      previousData.realData.previousAverageVolume *
         (1 - AVERAGE_VOLUME_THRESHOLD_FACTOR)
   ) {
     const positionFund = 0.99 * fund; // Actual tests have found that if use 100% fund to place an order, typically only 99% fund be used.
@@ -57,8 +57,8 @@ for (let i = 1; i < historyData.length; i++) {
   if (
     (hasPosition &&
       previousData.heikinAshiData.close < previousData.heikinAshiData.open &&
-      currentData.realData.volume >
-        currentData.realData.previousAverageVolume *
+      previousData.realData.volume >
+        previousData.realData.previousAverageVolume *
           (1 + AVERAGE_VOLUME_THRESHOLD_FACTOR)) ||
     (hasPosition &&
       currentData.heikinAshiData.previousLongTermTrend === "down") ||
