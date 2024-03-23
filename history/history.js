@@ -10,7 +10,7 @@ const filePath = new URL(`./json/${SYMBOL}.json`, import.meta.url);
 const convertHistoryData = (kLineData, heikinAshiKlineData) => {
   const results = [];
   for (let i = 0; i < kLineData.length; i++) {
-    if (kLineData[i].previousAverageVolume) {
+    if (kLineData[i].prevPeriodAvgVolume) {
       results.push({
         realData: kLineData[i],
         heikinAshiData: heikinAshiKlineData[i]

@@ -21,13 +21,13 @@ export const getKlineData = async () => {
   };
   const klineData = await klineDataAPI(params);
   const volumeArray = klineData.map((kline) => Number(kline[5]));
-  const getPreviousAverageVolume = (i) => {
+  const getPrevPeriodAvgVolume = (i) => {
     if (i >= PREVIOUS_AVERAGE_VOLUME_PERIOD) {
       const sumVolume = volumeArray
         .slice(i - PREVIOUS_AVERAGE_VOLUME_PERIOD, i)
         .reduce((acc, volume) => volume + acc, 0);
-      const previousAverageVolume = sumVolume / PREVIOUS_AVERAGE_VOLUME_PERIOD;
-      return previousAverageVolume;
+      const prevPeriodAvgVolume = sumVolume / PREVIOUS_AVERAGE_VOLUME_PERIOD;
+      return prevPeriodAvgVolume;
     }
     return null;
   };
@@ -39,7 +39,7 @@ export const getKlineData = async () => {
     volume: Number(kline[5]),
     openTime: kline[0],
     closeTime: kline[6],
-    previousAverageVolume: getPreviousAverageVolume(i)
+    prevPeriodAvgVolume: getPrevPeriodAvgVolume(i)
   }));
   return results;
 };
