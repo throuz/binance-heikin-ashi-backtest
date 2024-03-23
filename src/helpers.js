@@ -22,7 +22,7 @@ export const getKlineData = async () => {
   const klineData = await klineDataAPI(params);
   const volumeArray = klineData.map((kline) => Number(kline[5]));
   const getPrevPeriodAvgVolume = (i) => {
-    if (i >= PREVIOUS_AVERAGE_VOLUME_PERIOD) {
+    if (i > PREVIOUS_AVERAGE_VOLUME_PERIOD) {
       const sumVolume = volumeArray
         .slice(i - PREVIOUS_AVERAGE_VOLUME_PERIOD, i)
         .reduce((acc, volume) => volume + acc, 0);
