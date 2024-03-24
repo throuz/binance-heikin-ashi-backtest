@@ -22,19 +22,25 @@ npm run app
 
 ## Explanation of result
 
+---
+
 Running Period: 1474 -> _Running period_
 
-Hold PNL Percentage: 58.08% -> _The PNL percentage of just holding at the beginning_
+--- Hold Results ---------------------------
 
-Hold With Leverage PNL Percentage: 731.14% -> _The PNL percentage of just holding with leverage at the beginning_
+PNL Percentage: 58.08% -> _The PNL percentage of just holding at the beginning_
 
-Trade PNL Percentage: 1643.10% -> _The PNL percentage of Heikin-Ashi trading_
+With Leverage PNL Percentage: 731.14% -> _The PNL percentage of just holding with leverage at the beginning_
 
-Daily Trade PNL Percentage: 4.76% -> _The PNL percentage of Heikin-Ashi trading daily_
+--- Trade Results --------------------------
 
-Highest Trade PNL Percentage: 3648.25% -> _The highest PNL percentage of Heikin-Ashi trading_
+PNL Percentage: 1643.10% -> _The PNL percentage of Heikin-Ashi trading_
 
-Lowest Trade PNL Percentage: -13.45% -> _The lowest PNL percentage of Heikin-Ashi trading_
+Daily PNL Percentage: 4.76% -> _The PNL percentage of Heikin-Ashi trading daily_
+
+Highest PNL Percentage: 3648.25% -> _The highest PNL percentage of Heikin-Ashi trading_
+
+Lowest PNL Percentage: -13.45% -> _The lowest PNL percentage of Heikin-Ashi trading_
 
 Max Profit Percentage Per Trade: 112.43% -> _The max profit percentage of Heikin-Ashi per trade_
 

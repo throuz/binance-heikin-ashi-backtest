@@ -93,6 +93,9 @@ for (let i = 1; i < historyData.length; i++) {
     const openPositionTime = getFormattedTime(startPositionTimestamp);
     const closePositionTime = getFormattedTime(curData.realData.openTime);
     console.log(
+      closePrice > openPrice
+        ? "\x1b[32m%s %s %s %s\x1b[0m"
+        : "\x1b[31m%s %s %s %s\x1b[0m",
       "Fund:",
       fund.toFixed(2),
       `[${openPrice} ~ ${closePrice}]`,
@@ -142,24 +145,26 @@ if (!isLiquidation) {
   );
   const highestTradePNLPercentage = (highestFund / INITIAL_FUNDING - 1) * 100;
   const lowestTradePNLPercentage = (lowestFund / INITIAL_FUNDING - 1) * 100;
-  console.log("--------------------------------------------");
+  console.log("\n--------------------------------------------\n");
   console.log("Running Period:", historyData.length);
-  console.log("Hold PNL Percentage:", holdPNLPercentage.toFixed(2) + "%");
+  console.log("\n--- Hold Results ---------------------------\n");
+  console.log("PNL Percentage:", holdPNLPercentage.toFixed(2) + "%");
   console.log(
-    "Hold With Leverage PNL Percentage:",
+    "With Leverage PNL Percentage:",
     holdWithLeveragePNLPercentage.toFixed(2) + "%"
   );
-  console.log("Trade PNL Percentage:", tradePNLPercentage.toFixed(2) + "%");
+  console.log("\n--- Trade Results --------------------------\n");
+  console.log("PNL Percentage:", tradePNLPercentage.toFixed(2) + "%");
   console.log(
-    "Daily Trade PNL Percentage:",
+    "Daily PNL Percentage:",
     dailyTradePNLPercentage.toFixed(2) + "%"
   );
   console.log(
-    "Highest Trade PNL Percentage:",
+    "Highest PNL Percentage:",
     highestTradePNLPercentage.toFixed(2) + "%"
   );
   console.log(
-    "Lowest Trade PNL Percentage:",
+    "Lowest PNL Percentage:",
     lowestTradePNLPercentage.toFixed(2) + "%"
   );
   console.log(
