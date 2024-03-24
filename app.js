@@ -26,6 +26,9 @@ let openPrice = null;
 let liquidationPrice = null;
 let valueOfEachPoint = null;
 
+let highestFund = fund;
+let lowestFund = fund;
+
 for (let i = 1; i < historyData.length; i++) {
   const prevData = historyData[i - 1];
   const curData = historyData[i];
@@ -84,6 +87,12 @@ for (let i = 1; i < historyData.length; i++) {
     openPrice = null;
     liquidationPrice = null;
     valueOfEachPoint = null;
+    if (fund > highestFund) {
+      highestFund = fund;
+    }
+    if (fund < lowestFund) {
+      lowestFund = fund;
+    }
     console.log("Fund:", fund.toFixed(2));
   }
 }
@@ -115,6 +124,8 @@ if (!isLiquidation) {
     firstData.openTime,
     finalData.closeTime
   );
+  const highestTradePNLPercentage = (highestFund / INITIAL_FUNDING - 1) * 100;
+  const lowestTradePNLPercentage = (lowestFund / INITIAL_FUNDING - 1) * 100;
   console.log("--------------------------------------------");
   console.log("Running Period:", historyData.length);
   console.log("Hold PNL Percentage:", holdPNLPercentage.toFixed(2) + "%");
@@ -126,5 +137,13 @@ if (!isLiquidation) {
   console.log(
     "Daily Trade PNL Percentage:",
     dailyTradePNLPercentage.toFixed(2) + "%"
+  );
+  console.log(
+    "Highest Trade PNL Percentage:",
+    highestTradePNLPercentage.toFixed(2) + "%"
+  );
+  console.log(
+    "Lowest Trade PNL Percentage:",
+    lowestTradePNLPercentage.toFixed(2) + "%"
   );
 }

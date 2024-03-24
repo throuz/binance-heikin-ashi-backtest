@@ -22,15 +22,19 @@ npm run app
 
 ## Explanation of result
 
-Running Period: 1476 -> _Running period_
+Running Period: 1474 -> _Running period_
 
-Hold PNL Percentage: 60.40% -> _The PNL percentage of just holding at the beginning_
+Hold PNL Percentage: 58.08% -> _The PNL percentage of just holding at the beginning_
 
-Hold With Leverage PNL Percentage: -100.00% -> _The PNL percentage of just holding with leverage at the beginning_
+Hold With Leverage PNL Percentage: 731.14% -> _The PNL percentage of just holding with leverage at the beginning_
 
-Trade PNL Percentage: 3783.76% -> _The PNL percentage of Heikin-Ashi trading_
+Trade PNL Percentage: 1643.10% -> _The PNL percentage of Heikin-Ashi trading_
 
-Daily Trade PNL Percentage: 6.13% -> _The PNL percentage of Heikin-Ashi trading daily_
+Daily Trade PNL Percentage: 4.76% -> _The PNL percentage of Heikin-Ashi trading daily_
+
+Highest Trade PNL Percentage: 3648.25% -> _The highest PNL percentage of Heikin-Ashi trading_
+
+Lowest Trade PNL Percentage: -13.45% -> _The lowest PNL percentage of Heikin-Ashi trading_
 
 If `Liquidation` appeared, it means that the leverage was too high and the position was forced to be liquidated.
 
