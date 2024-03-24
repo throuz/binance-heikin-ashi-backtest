@@ -19,6 +19,9 @@ const historyData = await getHistoryData(needLastest);
 
 let isLiquidation = false;
 
+let maxProfitPercentagePerTrade = 0;
+let maxLossPercentagePerTrade = 0;
+
 let fund = INITIAL_FUNDING;
 let positionFund = null;
 let hasPosition = false;
@@ -71,14 +74,22 @@ for (let i = 1; i < historyData.length; i++) {
   ) {
     const closePrice = curData.realData.open;
     const priceDifference = closePrice - openPrice;
-    positionFund += valueOfEachPoint * priceDifference;
+    const pnl = valueOfEachPoint * priceDifference;
+    const pnlPercentage = (pnl / positionFund) * 100;
+    if (pnlPercentage > maxProfitPercentagePerTrade) {
+      maxProfitPercentagePerTrade = pnlPercentage;
+    }
+    if (pnlPercentage < maxLossPercentagePerTrade) {
+      maxLossPercentagePerTrade = pnlPercentage;
+    }
+    positionFund += pnl;
     const fee = positionFund * LEVERAGE * FEE;
     const fundingFee = getFundingFee(
       positionFund,
       startPositionTimestamp,
       curData.realData.openTime
     );
-    fund = fund + valueOfEachPoint * priceDifference - fee - fundingFee;
+    fund = fund + pnl - fee - fundingFee;
     const openPositionTime = getFormattedTime(startPositionTimestamp);
     const closePositionTime = getFormattedTime(curData.realData.openTime);
     console.log(
@@ -150,5 +161,13 @@ if (!isLiquidation) {
   console.log(
     "Lowest Trade PNL Percentage:",
     lowestTradePNLPercentage.toFixed(2) + "%"
+  );
+  console.log(
+    "Max Profit Percentage Per Trade:",
+    maxProfitPercentagePerTrade.toFixed(2) + "%"
+  );
+  console.log(
+    "Max Loss Percentage Per Trade:",
+    maxLossPercentagePerTrade.toFixed(2) + "%"
   );
 }

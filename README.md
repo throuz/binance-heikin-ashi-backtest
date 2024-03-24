@@ -36,6 +36,10 @@ Highest Trade PNL Percentage: 3648.25% -> _The highest PNL percentage of Heikin-
 
 Lowest Trade PNL Percentage: -13.45% -> _The lowest PNL percentage of Heikin-Ashi trading_
 
+Max Profit Percentage Per Trade: 112.43% -> _The max profit percentage of Heikin-Ashi per trade_
+
+Max Loss Percentage Per Trade: -38.39% -> _The max loss percentage of Heikin-Ashi per trade_
+
 If `Liquidation` appeared, it means that the leverage was too high and the position was forced to be liquidated.
 
 ## Contributing
