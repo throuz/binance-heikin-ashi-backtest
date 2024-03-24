@@ -123,3 +123,22 @@ export const getDailyPNLPercentage = (
     (Math.pow(1 + PNLPercentage / 100, 1 / days) - 1) * 100;
   return dailyPNLPercentage;
 };
+
+const convertTwoDigitFormat = (number) => {
+  if (number < 10) {
+    return "0" + String(number);
+  }
+  return String(number);
+};
+
+export const getFormattedTime = (timestamp) => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = convertTwoDigitFormat(date.getMonth() + 1);
+  const day = convertTwoDigitFormat(date.getDate());
+  const hours = convertTwoDigitFormat(date.getHours());
+  const minutes = convertTwoDigitFormat(date.getMinutes());
+  const seconds = convertTwoDigitFormat(date.getSeconds());
+  const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return formattedTime;
+};

@@ -10,7 +10,8 @@ import {
 import {
   getFundingFee,
   getFundingFeeTimes,
-  getDailyPNLPercentage
+  getDailyPNLPercentage,
+  getFormattedTime
 } from "./src/helpers.js";
 
 const needLastest = true;
@@ -78,6 +79,13 @@ for (let i = 1; i < historyData.length; i++) {
       curData.realData.openTime
     );
     fund = fund + valueOfEachPoint * priceDifference - fee - fundingFee;
+    const openPositionTime = getFormattedTime(startPositionTimestamp);
+    const closePositionTime = getFormattedTime(curData.realData.openTime);
+    console.log(
+      "Fund:",
+      fund.toFixed(2),
+      `[${openPositionTime} ~ ${closePositionTime}]`
+    );
     positionFund = null;
     hasPosition = false;
     startPositionTimestamp = null;
@@ -90,7 +98,6 @@ for (let i = 1; i < historyData.length; i++) {
     if (fund < lowestFund) {
       lowestFund = fund;
     }
-    console.log("Fund:", fund.toFixed(2));
   }
 }
 
