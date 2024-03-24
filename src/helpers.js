@@ -79,19 +79,26 @@ export const getOrganizedHeikinAshiKlineData = async () => {
   const longTermData = await getHeikinAshiKlineData(LONG_TERM_KLINE_INTERVAL);
   const getPrevTrendByTimestamp = (timestamp) => {
     for (let i = 1; i < longTermData.length; i++) {
-      const previousData = longTermData[i - 1];
-      const currentData = longTermData[i];
-      if (
-        timestamp >= currentData.openTime &&
-        timestamp <= currentData.closeTime
-      ) {
-        return previousData.close > previousData.open ? "up" : "down";
+      const prevData = longTermData[i - 1];
+      const curData = longTermData[i];
+      if (timestamp >= curData.openTime && timestamp <= curData.closeTime) {
+        return prevData.close > prevData.open ? "up" : "down";
+      }
+    }
+  };
+  const getPrevPrevTrendByTimestamp = (timestamp) => {
+    for (let i = 2; i < longTermData.length; i++) {
+      const prevPrevData = longTermData[i - 2];
+      const curData = longTermData[i];
+      if (timestamp >= curData.openTime && timestamp <= curData.closeTime) {
+        return prevPrevData.close > prevPrevData.open ? "up" : "down";
       }
     }
   };
   const results = shortTermData.map((kline) => ({
     ...kline,
-    prevLongTermTrend: getPrevTrendByTimestamp(kline.openTime)
+    prevLongTermTrend: getPrevTrendByTimestamp(kline.openTime),
+    prevPrevLongTermTrend: getPrevPrevTrendByTimestamp(kline.openTime)
   }));
   return results;
 };

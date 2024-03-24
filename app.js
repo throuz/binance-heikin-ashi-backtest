@@ -62,6 +62,9 @@ for (let i = 1; i < historyData.length; i++) {
       prevData.realData.volume >
         prevData.realData.prevPeriodAvgVolume *
           (1 + AVERAGE_VOLUME_THRESHOLD_FACTOR)) ||
+    (hasPosition &&
+      prevData.heikinAshiData.close < prevData.heikinAshiData.open &&
+      curData.heikinAshiData.prevPrevLongTermTrend === "down") ||
     (hasPosition && curData.heikinAshiData.prevLongTermTrend === "down") ||
     (hasPosition && i === historyData.length - 1)
   ) {
