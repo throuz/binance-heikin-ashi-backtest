@@ -27,29 +27,29 @@ let liquidationPrice = null;
 let valueOfEachPoint = null;
 
 for (let i = 1; i < historyData.length; i++) {
-  const previousData = historyData[i - 1];
-  const currentData = historyData[i];
+  const prevData = historyData[i - 1];
+  const curData = historyData[i];
   // Buy
   if (
     !hasPosition &&
     fund > 0 &&
-    previousData.heikinAshiData.close > previousData.heikinAshiData.open &&
-    currentData.heikinAshiData.previousLongTermTrend === "up" &&
-    previousData.realData.volume <
-      previousData.realData.prevPeriodAvgVolume *
+    prevData.heikinAshiData.close > prevData.heikinAshiData.open &&
+    curData.heikinAshiData.previousLongTermTrend === "up" &&
+    prevData.realData.volume <
+      prevData.realData.prevPeriodAvgVolume *
         (1 - AVERAGE_VOLUME_THRESHOLD_FACTOR)
   ) {
     positionFund = fund * ((EACH_TIME_INVEST_FUND_PERCENTAGE - 1) / 100); // Actual tests have found that typically 1% less
     const fee = positionFund * LEVERAGE * FEE;
     fund = fund - fee;
     hasPosition = true;
-    startPositionTimestamp = currentData.realData.openTime;
-    openPrice = currentData.realData.open;
+    startPositionTimestamp = curData.realData.openTime;
+    openPrice = curData.realData.open;
     liquidationPrice = openPrice * ((LEVERAGE - 1) / LEVERAGE + 0.01); // Actual tests have found that typically 1% more
     valueOfEachPoint = (positionFund * LEVERAGE) / openPrice;
   }
   // Liquidation
-  if (hasPosition && currentData.realData.low < liquidationPrice) {
+  if (hasPosition && curData.realData.low < liquidationPrice) {
     isLiquidation = true;
     console.log("--------------------------------------------");
     console.log("Liquidation");
@@ -58,22 +58,21 @@ for (let i = 1; i < historyData.length; i++) {
   // Sell
   if (
     (hasPosition &&
-      previousData.heikinAshiData.close < previousData.heikinAshiData.open &&
-      previousData.realData.volume >
-        previousData.realData.prevPeriodAvgVolume *
+      prevData.heikinAshiData.close < prevData.heikinAshiData.open &&
+      prevData.realData.volume >
+        prevData.realData.prevPeriodAvgVolume *
           (1 + AVERAGE_VOLUME_THRESHOLD_FACTOR)) ||
-    (hasPosition &&
-      currentData.heikinAshiData.previousLongTermTrend === "down") ||
+    (hasPosition && curData.heikinAshiData.previousLongTermTrend === "down") ||
     (hasPosition && i === historyData.length - 1)
   ) {
-    const closePrice = currentData.realData.open;
+    const closePrice = curData.realData.open;
     const priceDifference = closePrice - openPrice;
     positionFund += valueOfEachPoint * priceDifference;
     const fee = positionFund * LEVERAGE * FEE;
     const fundingFee = getFundingFee(
       positionFund,
       startPositionTimestamp,
-      currentData.realData.openTime
+      curData.realData.openTime
     );
     fund = fund + valueOfEachPoint * priceDifference - fee - fundingFee;
     positionFund = null;
