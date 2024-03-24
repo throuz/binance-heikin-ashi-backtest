@@ -84,6 +84,7 @@ for (let i = 1; i < historyData.length; i++) {
     console.log(
       "Fund:",
       fund.toFixed(2),
+      `[${openPrice} ~ ${closePrice}]`,
       `[${openPositionTime} ~ ${closePositionTime}]`
     );
     positionFund = null;
