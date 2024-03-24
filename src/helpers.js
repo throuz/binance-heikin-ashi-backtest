@@ -86,19 +86,9 @@ export const getOrganizedHeikinAshiKlineData = async () => {
       }
     }
   };
-  const getPrevPrevTrendByTimestamp = (timestamp) => {
-    for (let i = 2; i < longTermData.length; i++) {
-      const prevPrevData = longTermData[i - 2];
-      const curData = longTermData[i];
-      if (timestamp >= curData.openTime && timestamp <= curData.closeTime) {
-        return prevPrevData.close > prevPrevData.open ? "up" : "down";
-      }
-    }
-  };
   const results = shortTermData.map((kline) => ({
     ...kline,
-    prevLongTermTrend: getPrevTrendByTimestamp(kline.openTime),
-    prevPrevLongTermTrend: getPrevPrevTrendByTimestamp(kline.openTime)
+    prevLongTermTrend: getPrevTrendByTimestamp(kline.openTime)
   }));
   return results;
 };
