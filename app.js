@@ -34,7 +34,7 @@ for (let i = 1; i < historyData.length; i++) {
     !hasPosition &&
     fund > 0 &&
     prevData.heikinAshiData.close > prevData.heikinAshiData.open &&
-    curData.heikinAshiData.previousLongTermTrend === "up" &&
+    curData.heikinAshiData.prevLongTermTrend === "up" &&
     prevData.realData.volume <
       prevData.realData.prevPeriodAvgVolume *
         (1 - AVERAGE_VOLUME_THRESHOLD_FACTOR)
@@ -62,7 +62,7 @@ for (let i = 1; i < historyData.length; i++) {
       prevData.realData.volume >
         prevData.realData.prevPeriodAvgVolume *
           (1 + AVERAGE_VOLUME_THRESHOLD_FACTOR)) ||
-    (hasPosition && curData.heikinAshiData.previousLongTermTrend === "down") ||
+    (hasPosition && curData.heikinAshiData.prevLongTermTrend === "down") ||
     (hasPosition && i === historyData.length - 1)
   ) {
     const closePrice = curData.realData.open;
