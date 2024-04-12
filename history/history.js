@@ -20,14 +20,14 @@ const convertHistoryData = (kLineData, heikinAshiKlineData) => {
   return results;
 };
 
-export const getHistoryData = async (needLastest) => {
-  if (needLastest) {
-    const klineData = await getKlineData();
-    const heikinAshiKlineData = await getOrganizedHeikinAshiKlineData();
-    const historyData = convertHistoryData(klineData, heikinAshiKlineData);
-    await writeFile(filePath, JSON.stringify(historyData, undefined, 2));
-    return historyData;
-  }
+export const setHistoryData = async () => {
+  const klineData = await getKlineData();
+  const heikinAshiKlineData = await getOrganizedHeikinAshiKlineData();
+  const historyData = convertHistoryData(klineData, heikinAshiKlineData);
+  await writeFile(filePath, JSON.stringify(historyData, undefined, 2));
+};
+
+export const getHistoryData = async () => {
   const contents = await readFile(filePath, { encoding: "utf8" });
   const historyData = JSON.parse(contents);
   return historyData;

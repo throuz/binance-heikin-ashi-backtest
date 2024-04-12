@@ -1,4 +1,4 @@
-import { getHistoryData } from "./history/history.js";
+import { setHistoryData, getHistoryData } from "./history/history.js";
 import {
   AVERAGE_VOLUME_FOR_BUY_FACTORY,
   AVERAGE_VOLUME_FOR_SELL_FACTORY,
@@ -15,8 +15,8 @@ import {
   getFormattedTime
 } from "./src/helpers.js";
 
-const needLastest = true;
-const historyData = await getHistoryData(needLastest);
+await setHistoryData();
+const historyData = await getHistoryData();
 
 let isLiquidation = false;
 
