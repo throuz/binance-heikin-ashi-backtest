@@ -1,6 +1,7 @@
 import { getHistoryData } from "./history/history.js";
 import {
-  AVERAGE_VOLUME_THRESHOLD_FACTOR,
+  AVERAGE_VOLUME_FOR_BUY_FACTORY,
+  AVERAGE_VOLUME_FOR_SELL_FACTORY,
   INITIAL_FUNDING,
   EACH_TIME_INVEST_FUND_PERCENTAGE,
   LEVERAGE,
@@ -43,8 +44,7 @@ for (let i = 1; i < historyData.length; i++) {
     prevData.heikinAshiData.close > prevData.heikinAshiData.open &&
     curData.heikinAshiData.prevLongTermTrend === "up" &&
     prevData.realData.volume <
-      prevData.realData.prevPeriodAvgVolume *
-        (1 - AVERAGE_VOLUME_THRESHOLD_FACTOR)
+      prevData.realData.prevPeriodAvgVolume * AVERAGE_VOLUME_FOR_BUY_FACTORY
   ) {
     positionFund = fund * ((EACH_TIME_INVEST_FUND_PERCENTAGE - 1) / 100); // Actual tests have found that typically 1% less
     const fee = positionFund * LEVERAGE * FEE;
@@ -68,7 +68,7 @@ for (let i = 1; i < historyData.length; i++) {
       prevData.heikinAshiData.close < prevData.heikinAshiData.open &&
       prevData.realData.volume >
         prevData.realData.prevPeriodAvgVolume *
-          (1 + AVERAGE_VOLUME_THRESHOLD_FACTOR)) ||
+          AVERAGE_VOLUME_FOR_SELL_FACTORY) ||
     (hasPosition && curData.heikinAshiData.prevLongTermTrend === "down") ||
     (hasPosition && i === historyData.length - 1)
   ) {
