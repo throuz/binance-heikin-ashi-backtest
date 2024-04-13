@@ -132,3 +132,7 @@ export const getFormattedTime = (timestamp) => {
   const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   return formattedTime;
 };
+
+export const getAddedNumber = (number, addNumber, digit) => {
+  return Number((number + addNumber).toFixed(digit));
+};

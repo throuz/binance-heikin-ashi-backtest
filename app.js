@@ -1,11 +1,32 @@
 import { getBacktestResult } from "./src/backtest.js";
 import { setHistoryData } from "./history/history.js";
+import cliProgress from "cli-progress";
+import { getAddedNumber } from "./src/helpers.js";
 
 await setHistoryData();
 
-const avgVolPeriodSetting = { min: 2, max: 30, step: 1 };
+const avgVolPeriodSetting = { min: 5, max: 30, step: 1 };
 const entryAvgVolFactorSetting = { min: 0.5, max: 1, step: 0.05 };
 const exitAvgVolFactorSetting = { min: 1, max: 1.5, step: 0.05 };
+
+const avgPeriodValues =
+  (avgVolPeriodSetting.max - avgVolPeriodSetting.min) /
+    avgVolPeriodSetting.step +
+  1;
+const entryFactorValues =
+  (entryAvgVolFactorSetting.max - entryAvgVolFactorSetting.min) /
+    entryAvgVolFactorSetting.step +
+  1;
+const exitFactorValues =
+  (exitAvgVolFactorSetting.max - exitAvgVolFactorSetting.min) /
+    exitAvgVolFactorSetting.step +
+  1;
+const totalRuns = avgPeriodValues * entryFactorValues * exitFactorValues;
+const progressBar = new cliProgress.SingleBar(
+  {},
+  cliProgress.Presets.shades_classic
+);
+progressBar.start(totalRuns, 0);
 
 const getBestResult = () => {
   let bestResult = { fund: 0, highestFund: 0 };
@@ -14,17 +35,25 @@ const getBestResult = () => {
   for (
     let avgVolPeriod = avgVolPeriodSetting.min;
     avgVolPeriod <= avgVolPeriodSetting.max;
-    avgVolPeriod += avgVolPeriodSetting.step
+    avgVolPeriod = getAddedNumber(avgVolPeriod, avgVolPeriodSetting.step, 0)
   ) {
     for (
       let entryAvgVolFactor = entryAvgVolFactorSetting.min;
       entryAvgVolFactor <= entryAvgVolFactorSetting.max;
-      entryAvgVolFactor += entryAvgVolFactorSetting.step
+      entryAvgVolFactor = getAddedNumber(
+        entryAvgVolFactor,
+        entryAvgVolFactorSetting.step,
+        2
+      )
     ) {
       for (
         let exitAvgVolFactor = exitAvgVolFactorSetting.min;
         exitAvgVolFactor <= exitAvgVolFactorSetting.max;
-        exitAvgVolFactor += exitAvgVolFactorSetting.step
+        exitAvgVolFactor = getAddedNumber(
+          exitAvgVolFactor,
+          exitAvgVolFactorSetting.step,
+          2
+        )
       ) {
         const backtestResult = getBacktestResult(
           avgVolPeriodSetting.max,
@@ -39,6 +68,7 @@ const getBestResult = () => {
           bestResult = backtestResult;
           bestParams = { avgVolPeriod, entryAvgVolFactor, exitAvgVolFactor };
         }
+        progressBar.increment();
       }
     }
   }
@@ -61,6 +91,8 @@ const getBestResult = () => {
     }
   }
 
+  progressBar.stop();
+
   return { ...bestResult, ...bestParams, leverage };
 };
 
@@ -73,6 +105,7 @@ const {
   exitAvgVolFactor,
   leverage
 } = bestResult;
+console.log("================================================================");
 console.log("fund", fund);
 console.log("highestFund", highestFund);
 console.log("avgVolPeriod", avgVolPeriod);
