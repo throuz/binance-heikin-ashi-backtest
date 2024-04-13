@@ -8,7 +8,3 @@ export const INITIAL_FUNDING = 100;
 export const EACH_TIME_INVEST_FUND_PERCENTAGE = 100; // 100%
 export const FEE = 0.0005; // 0.05%
 export const FUNDING_RATE = 0.0001; // 0.01%
-export const PREVIOUS_AVERAGE_VOLUME_PERIOD = 10;
-export const AVERAGE_VOLUME_FOR_BUY_FACTORY = 0.76; // 0.76 mean 76% average volume
-export const AVERAGE_VOLUME_FOR_SELL_FACTORY = 1.45; // 1.45 mean 145% average volume
-export const LEVERAGE = 13;

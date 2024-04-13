@@ -1,15 +1,14 @@
 import {
   SYMBOL,
-  LONG_TERM_KLINE_INTERVAL,
   KLINE_INTERVAL,
   KLINE_LIMIT,
   KLINE_START_TIME,
   KLINE_END_TIME,
-  PREVIOUS_AVERAGE_VOLUME_PERIOD,
   FUNDING_RATE
 } from "../config/config.js";
 import { klineDataAPI, markPriceKlineDataAPI } from "./api.js";
 import { heikinashi } from "technicalindicators";
+import { getHistoryData } from "../history/history.js";
 
 export const getKlineData = async () => {
   const params = {
@@ -20,31 +19,29 @@ export const getKlineData = async () => {
     endTime: KLINE_END_TIME
   };
   const klineData = await klineDataAPI(params);
-  const volumeArray = klineData.map((kline) => Number(kline[5]));
-  const getPrevPeriodAvgVolume = (i) => {
-    if (i >= PREVIOUS_AVERAGE_VOLUME_PERIOD) {
-      const sumVolume = volumeArray
-        .slice(i - PREVIOUS_AVERAGE_VOLUME_PERIOD, i)
-        .reduce((acc, volume) => volume + acc, 0);
-      const prevPeriodAvgVolume = sumVolume / PREVIOUS_AVERAGE_VOLUME_PERIOD;
-      return prevPeriodAvgVolume;
-    }
-    return null;
-  };
-  const results = klineData.map((kline, i) => ({
-    open: Number(kline[1]),
-    high: Number(kline[2]),
-    low: Number(kline[3]),
-    close: Number(kline[4]),
+  const results = klineData.map((kline) => ({
+    openPrice: Number(kline[1]),
+    highPrice: Number(kline[2]),
+    lowPrice: Number(kline[3]),
+    closePrice: Number(kline[4]),
     volume: Number(kline[5]),
     openTime: kline[0],
-    closeTime: kline[6],
-    prevPeriodAvgVolume: getPrevPeriodAvgVolume(i)
+    closeTime: kline[6]
   }));
   return results;
 };
 
-const getHeikinAshiKlineData = async (interval = KLINE_INTERVAL) => {
+export const getPrePeriodAvgVol = (i, avgVolPeriod) => {
+  const { klineData } = getHistoryData();
+  const volumeArray = klineData.map((kline) => kline.volume);
+  const prevPeriodSumVolume = volumeArray
+    .slice(i - avgVolPeriod, i)
+    .reduce((acc, volume) => acc + volume, 0);
+  const prePeriodAvgVol = prevPeriodSumVolume / avgVolPeriod;
+  return prePeriodAvgVol;
+};
+
+export const getHeikinAshiKlineData = async (interval = KLINE_INTERVAL) => {
   const params = {
     symbol: SYMBOL,
     interval: interval,
@@ -64,33 +61,26 @@ const getHeikinAshiKlineData = async (interval = KLINE_INTERVAL) => {
     close: closePrices
   });
   const results = markPriceKlineData.map((kline, i) => ({
-    open: heikinashiResults.open[i],
-    high: heikinashiResults.high[i],
-    low: heikinashiResults.low[i],
-    close: heikinashiResults.close[i],
+    openPrice: heikinashiResults.open[i],
+    highPrice: heikinashiResults.high[i],
+    lowPrice: heikinashiResults.low[i],
+    closePrice: heikinashiResults.close[i],
     openTime: kline[0],
     closeTime: kline[6]
   }));
   return results;
 };
 
-export const getOrganizedHeikinAshiKlineData = async () => {
-  const shortTermData = await getHeikinAshiKlineData();
-  const longTermData = await getHeikinAshiKlineData(LONG_TERM_KLINE_INTERVAL);
-  const getPrevTrendByTimestamp = (timestamp) => {
-    for (let i = 1; i < longTermData.length; i++) {
-      const prevData = longTermData[i - 1];
-      const curData = longTermData[i];
-      if (timestamp >= curData.openTime && timestamp <= curData.closeTime) {
-        return prevData.close > prevData.open ? "up" : "down";
-      }
+export const getPreLongTermTrend = (timestamp) => {
+  const { longTermHeikinAshiKlineData } = getHistoryData();
+  for (let i = 1; i < longTermHeikinAshiKlineData.length; i++) {
+    const prevData = longTermHeikinAshiKlineData[i - 1];
+    const curData = longTermHeikinAshiKlineData[i];
+    if (timestamp >= curData.openTime && timestamp <= curData.closeTime) {
+      return prevData.closePrice > prevData.openPrice ? "up" : "down";
     }
-  };
-  const results = shortTermData.map((kline) => ({
-    ...kline,
-    prevLongTermTrend: getPrevTrendByTimestamp(kline.openTime)
-  }));
-  return results;
+  }
+  return null;
 };
 
 export const getFundingFeeTimes = (startTimeStamp, endTimeStamp) => {

@@ -1,34 +1,41 @@
 import { readFile, writeFile } from "node:fs/promises";
-import {
-  getKlineData,
-  getOrganizedHeikinAshiKlineData
-} from "../src/helpers.js";
-import { SYMBOL } from "../config/config.js";
+import { getKlineData, getHeikinAshiKlineData } from "../src/helpers.js";
+import { SYMBOL, LONG_TERM_KLINE_INTERVAL } from "../config/config.js";
 
-const filePath = new URL(`./json/${SYMBOL}.json`, import.meta.url);
+let klineData = [];
+let heikinAshiKlineData = [];
+let longTermHeikinAshiKlineData = [];
 
-const convertHistoryData = (kLineData, heikinAshiKlineData) => {
-  const results = [];
-  for (let i = 0; i < kLineData.length; i++) {
-    if (kLineData[i].prevPeriodAvgVolume) {
-      results.push({
-        realData: kLineData[i],
-        heikinAshiData: heikinAshiKlineData[i]
-      });
-    }
-  }
-  return results;
-};
+const klineDataFilePath = new URL(
+  `./json/${SYMBOL}-kline.json`,
+  import.meta.url
+);
+const heikinAshiKlineDataFilePath = new URL(
+  `./json/${SYMBOL}-heikin-ashi-kline.json`,
+  import.meta.url
+);
+const longTermHeikinAshiKlineDataFilePath = new URL(
+  `./json/${SYMBOL}-long-term-heikin-ashi-kline.json`,
+  import.meta.url
+);
 
 export const setHistoryData = async () => {
-  const klineData = await getKlineData();
-  const heikinAshiKlineData = await getOrganizedHeikinAshiKlineData();
-  const historyData = convertHistoryData(klineData, heikinAshiKlineData);
-  await writeFile(filePath, JSON.stringify(historyData, undefined, 2));
+  klineData = await getKlineData();
+  heikinAshiKlineData = await getHeikinAshiKlineData();
+  longTermHeikinAshiKlineData = await getHeikinAshiKlineData(
+    LONG_TERM_KLINE_INTERVAL
+  );
+  await writeFile(klineDataFilePath, JSON.stringify(klineData, undefined, 2));
+  await writeFile(
+    heikinAshiKlineDataFilePath,
+    JSON.stringify(heikinAshiKlineData, undefined, 2)
+  );
+  await writeFile(
+    longTermHeikinAshiKlineDataFilePath,
+    JSON.stringify(longTermHeikinAshiKlineData, undefined, 2)
+  );
 };
 
-export const getHistoryData = async () => {
-  const contents = await readFile(filePath, { encoding: "utf8" });
-  const historyData = JSON.parse(contents);
-  return historyData;
+export const getHistoryData = () => {
+  return { klineData, heikinAshiKlineData, longTermHeikinAshiKlineData };
 };
