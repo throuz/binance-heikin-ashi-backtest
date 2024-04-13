@@ -34,7 +34,6 @@ const getBestResult = () => {
         );
         if (
           backtestResult &&
-          backtestResult.fund > bestResult.fund &&
           backtestResult.highestFund > bestResult.highestFund
         ) {
           bestResult = backtestResult;
