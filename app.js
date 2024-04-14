@@ -9,26 +9,26 @@ const avgVolPeriodSetting = { min: 5, max: 30, step: 1 };
 const entryAvgVolFactorSetting = { min: 0.5, max: 1, step: 0.05 };
 const exitAvgVolFactorSetting = { min: 1, max: 1.5, step: 0.05 };
 
-const avgPeriodValues =
-  (avgVolPeriodSetting.max - avgVolPeriodSetting.min) /
-    avgVolPeriodSetting.step +
-  1;
-const entryFactorValues =
-  (entryAvgVolFactorSetting.max - entryAvgVolFactorSetting.min) /
-    entryAvgVolFactorSetting.step +
-  1;
-const exitFactorValues =
-  (exitAvgVolFactorSetting.max - exitAvgVolFactorSetting.min) /
-    exitAvgVolFactorSetting.step +
-  1;
-const totalRuns = avgPeriodValues * entryFactorValues * exitFactorValues;
-const progressBar = new cliProgress.SingleBar(
-  {},
-  cliProgress.Presets.shades_classic
-);
-progressBar.start(totalRuns, 0);
+const getTotalRuns = () => {
+  const avgVolPeriodRuns =
+    (avgVolPeriodSetting.max - avgVolPeriodSetting.min) /
+      avgVolPeriodSetting.step +
+    1;
+  const entryAvgVolFactorRuns =
+    (entryAvgVolFactorSetting.max - entryAvgVolFactorSetting.min) /
+      entryAvgVolFactorSetting.step +
+    1;
+  const exitAvgVolFactorRuns =
+    (exitAvgVolFactorSetting.max - exitAvgVolFactorSetting.min) /
+      exitAvgVolFactorSetting.step +
+    1;
+  return avgVolPeriodRuns * entryAvgVolFactorRuns * exitAvgVolFactorRuns;
+};
 
 const getBestResult = () => {
+  const progressBar = new cliProgress.SingleBar({});
+  progressBar.start(getTotalRuns(), 0);
+
   let bestResult = { fund: 0, highestFund: 0 };
   let bestParams = {};
 
