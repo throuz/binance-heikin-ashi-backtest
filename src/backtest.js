@@ -10,13 +10,46 @@ import {
 } from "./helpers.js";
 import { getHistoryData } from "../history/history.js";
 
-export const getBacktestResult = (
+const getReadableTime = (timestamp) => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
+const logTradeResult = ({
+  fund,
+  openPrice,
+  closePrice,
+  startTimestamp,
+  endTimestamp
+}) => {
+  const logRedColor = "\x1b[31m";
+  const logGreenColor = "\x1b[32m";
+  const logResetColor = "\x1b[0m";
+  const logColor = closePrice > openPrice ? logGreenColor : logRedColor;
+  const formatedFund = fund.toFixed(2);
+  const formatedOpenPrice = openPrice.toFixed(1);
+  const formatedClosePrice = closePrice.toFixed(1);
+  const startTime = getReadableTime(startTimestamp);
+  const endTime = getReadableTime(endTimestamp);
+  console.log(
+    `${logColor}Fund: ${formatedFund} [${formatedOpenPrice} ~ ${formatedClosePrice}] [${startTime} ~ ${endTime}]${logResetColor}`
+  );
+};
+
+export const getBacktestResult = ({
+  shouldLogResults,
   startIndex,
   avgVolPeriod,
   entryAvgVolFactor,
   exitAvgVolFactor,
-  leverage = 1
-) => {
+  leverage
+}) => {
   let fund = INITIAL_FUNDING;
   let positionFund = null;
   let startPositionTimestamp = null;
@@ -63,12 +96,22 @@ export const getBacktestResult = (
       const pnl = valueOfEachPoint * priceDifference;
       positionFund += pnl;
       const fee = positionFund * leverage * FEE;
+      const endPositionTimestamp = curKline.openTime;
       const fundingFee = getFundingFee(
         positionFund,
         startPositionTimestamp,
-        curKline.openTime
+        endPositionTimestamp
       );
       fund = fund + pnl - fee - fundingFee;
+      if (shouldLogResults) {
+        logTradeResult({
+          fund,
+          openPrice,
+          closePrice,
+          startTimestamp: startPositionTimestamp,
+          endTimestamp: endPositionTimestamp
+        });
+      }
       positionFund = null;
       startPositionTimestamp = null;
       openPrice = null;

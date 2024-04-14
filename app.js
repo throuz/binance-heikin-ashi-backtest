@@ -55,12 +55,14 @@ const getBestResult = () => {
           2
         )
       ) {
-        const backtestResult = getBacktestResult(
-          avgVolPeriodSetting.max,
-          avgVolPeriod,
-          entryAvgVolFactor,
-          exitAvgVolFactor
-        );
+        const backtestResult = getBacktestResult({
+          shouldLogResults: false,
+          startIndex: avgVolPeriodSetting.max,
+          avgVolPeriod: avgVolPeriod,
+          entryAvgVolFactor: entryAvgVolFactor,
+          exitAvgVolFactor: exitAvgVolFactor,
+          leverage: 1
+        });
         if (
           backtestResult &&
           backtestResult.highestFund > bestResult.highestFund
@@ -76,13 +78,14 @@ const getBestResult = () => {
   let leverage = 1;
 
   for (let i = 1; i < 100; i++) {
-    const backtestResult = getBacktestResult(
-      avgVolPeriodSetting.max,
-      bestParams.avgVolPeriod,
-      bestParams.entryAvgVolFactor,
-      bestParams.exitAvgVolFactor,
-      i
-    );
+    const backtestResult = getBacktestResult({
+      shouldLogResults: false,
+      startIndex: avgVolPeriodSetting.max,
+      avgVolPeriod: bestParams.avgVolPeriod,
+      entryAvgVolFactor: bestParams.entryAvgVolFactor,
+      exitAvgVolFactor: bestParams.exitAvgVolFactor,
+      leverage: i
+    });
     if (backtestResult) {
       bestResult = backtestResult;
       leverage = i;
@@ -105,6 +108,15 @@ const {
   exitAvgVolFactor,
   leverage
 } = bestResult;
+console.log("================================================================");
+getBacktestResult({
+  shouldLogResults: true,
+  startIndex: avgVolPeriodSetting.max,
+  avgVolPeriod,
+  entryAvgVolFactor,
+  exitAvgVolFactor,
+  leverage
+});
 console.log("================================================================");
 console.log("fund", fund);
 console.log("highestFund", highestFund);
