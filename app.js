@@ -63,10 +63,7 @@ const getBestResult = () => {
           exitAvgVolFactor: exitAvgVolFactor,
           leverage: 1
         });
-        if (
-          backtestResult &&
-          backtestResult.highestFund > bestResult.highestFund
-        ) {
+        if (backtestResult && backtestResult.fund > bestResult.fund) {
           bestResult = backtestResult;
           bestParams = { avgVolPeriod, entryAvgVolFactor, exitAvgVolFactor };
         }
