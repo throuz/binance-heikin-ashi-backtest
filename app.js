@@ -1,6 +1,6 @@
 import { getBacktestResult } from "./src/backtest.js";
 import { setHistoryData } from "./history/history.js";
-import cliProgress from "cli-progress";
+import { SingleBar, Presets } from "cli-progress";
 import { getAddedNumber } from "./src/helpers.js";
 
 await setHistoryData();
@@ -26,11 +26,10 @@ const getTotalRuns = () => {
 };
 
 const getBestResult = () => {
-  const progressBar = new cliProgress.SingleBar({});
+  const progressBar = new SingleBar({}, Presets.shades_classic);
   progressBar.start(getTotalRuns(), 0);
 
-  let bestResult = { fund: 0, highestFund: 0 };
-  let bestParams = {};
+  let bestResult = { fund: 0 };
 
   for (
     let avgVolPeriod = avgVolPeriodSetting.min;
@@ -65,27 +64,23 @@ const getBestResult = () => {
         });
         if (backtestResult && backtestResult.fund > bestResult.fund) {
           bestResult = backtestResult;
-          bestParams = { avgVolPeriod, entryAvgVolFactor, exitAvgVolFactor };
         }
         progressBar.increment();
       }
     }
   }
 
-  let leverage = 1;
-
   for (let i = 1; i < 100; i++) {
     const backtestResult = getBacktestResult({
       shouldLogResults: false,
       startIndex: avgVolPeriodSetting.max,
-      avgVolPeriod: bestParams.avgVolPeriod,
-      entryAvgVolFactor: bestParams.entryAvgVolFactor,
-      exitAvgVolFactor: bestParams.exitAvgVolFactor,
+      avgVolPeriod: bestResult.avgVolPeriod,
+      entryAvgVolFactor: bestResult.entryAvgVolFactor,
+      exitAvgVolFactor: bestResult.exitAvgVolFactor,
       leverage: i
     });
     if (backtestResult) {
       bestResult = backtestResult;
-      leverage = i;
     } else {
       break;
     }
@@ -93,7 +88,7 @@ const getBestResult = () => {
 
   progressBar.stop();
 
-  return { ...bestResult, ...bestParams, leverage };
+  return bestResult;
 };
 
 const bestResult = getBestResult();

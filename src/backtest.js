@@ -33,12 +33,10 @@ const logTradeResult = ({
   const logResetColor = "\x1b[0m";
   const logColor = closePrice > openPrice ? logGreenColor : logRedColor;
   const formatedFund = fund.toFixed(2);
-  const formatedOpenPrice = openPrice.toFixed(1);
-  const formatedClosePrice = closePrice.toFixed(1);
   const startTime = getReadableTime(startTimestamp);
   const endTime = getReadableTime(endTimestamp);
   console.log(
-    `${logColor}Fund: ${formatedFund} [${formatedOpenPrice} ~ ${formatedClosePrice}] [${startTime} ~ ${endTime}]${logResetColor}`
+    `${logColor}Fund: ${formatedFund} [${openPrice} ~ ${closePrice}] [${startTime} ~ ${endTime}]${logResetColor}`
   );
 };
 
@@ -122,5 +120,12 @@ export const getBacktestResult = ({
       }
     }
   }
-  return { fund, highestFund };
+  return {
+    fund,
+    highestFund,
+    avgVolPeriod,
+    entryAvgVolFactor,
+    exitAvgVolFactor,
+    leverage
+  };
 };
